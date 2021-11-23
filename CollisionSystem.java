@@ -15,51 +15,12 @@ public class CollisionSystem {
 
     // dt:time quantum
     public void simulate(double dt, int n) {
-        for (double t = 0.0; t<60; t = t + dt) {
+        for (double t = 0.0; t< 10000; t = t + dt) {
 
             Quad quad = new Quad(0, 0, 300 * 2);
             BHTree tree = new BHTree(quad);
 
 
-            //TO CONSIDER COLLISION!
-
-            for(int i = 0 ; i < n ;i++){
-                double minT = -1;
-                Particle that = null;
-                for(int j = i+1 ; j < n ; j++){
-                    /*if(particles[i].collideWithP(particles[j])){
-                        if(minT == -1 ){
-                            minT = Particle.alreadyCollideTimeWithP(particles[i],particles[j]);
-                            that = particles[j];
-                        } else if(Particle.alreadyCollideTimeWithP(particles[i],particles[j])<minT){
-                            minT = Particle.alreadyCollideTimeWithP(particles[i],particles[j]);
-                            that = particles[j];
-                        }
-                    }*/
-                }
-
-                if(particles[i].collideWithW() && particles[i].alreadyCollideTimeWithW()[1]< minT){
-                    minT = particles[i].alreadyCollideTimeWithW()[1];
-                    that = null;
-                }
-
-                if(minT==-1) continue;
-
-                particles[i].reverse(minT);
-
-                if(that!=null){
-                    particles[i].bounceOff(that,minT);
-                }else{
-                    if(particles[i].alreadyCollideTimeWithW()[0]==1){
-                        particles[i].bounceOffVerticalWall(minT);
-                    } else if (particles[i].alreadyCollideTimeWithW()[0]==2){
-                        particles[i].bounceOffHorizontalWall(minT);
-                    } else{
-                        particles[i].bounceOffVerticalWall(minT);
-                        particles[i].bounceOffHorizontalWall(minT);
-                    }
-                }
-            }
 
             // build the Barnes-Hut tree
             for (int i = 0; i < n; i++) {
@@ -75,6 +36,23 @@ public class CollisionSystem {
             }
 
 
+            //TO CONSIDER COLLISION!
+            for(int i = 0 ; i < n ;i++){
+                for(int j = i+1 ; j < n ; j++){
+                    if(particles[i].collideWithP(particles[j])){
+                        particles[i].bounceOff(particles[j],Particle.alreadyCollideTimeWithP(particles[i],particles[j]));
+                    }
+                }
+                if(particles[i].alreadyCollideTimeWithW()[0]==1){
+                    particles[i].bounceOffVerticalWall(particles[i].alreadyCollideTimeWithW()[1]);
+                } else if (particles[i].alreadyCollideTimeWithW()[0]==2){
+                    particles[i].bounceOffHorizontalWall(particles[i].alreadyCollideTimeWithW()[1]);
+                } else{
+                    particles[i].bounceOffVerticalWall(particles[i].alreadyCollideTimeWithW()[1]);
+                    particles[i].bounceOffHorizontalWall(particles[i].alreadyCollideTimeWithW()[1]);
+                }
+            }
+
             // draw the Particle
             StdDraw.clear();
             for (int i = 0; i < n; i++)
@@ -86,6 +64,10 @@ public class CollisionSystem {
     }
 
     public static void main(String[] args) {
+
+        StdDraw.enableDoubleBuffering();
+        StdDraw.setCanvasSize(600, 600);
+
         // the array of particles
         Particle[] particles;
 
@@ -117,11 +99,6 @@ public class CollisionSystem {
             particles[i] = new Particle(radius, rx, ry, vx, vy, mass, color);
         }
 
-        StdDraw.enableDoubleBuffering();
-        //StdDraw.setCanvasSize(square, square);
-
-        StdDraw.setXscale(0, square);
-        StdDraw.setYscale(0, square);
 
         CollisionSystem system = new CollisionSystem(particles);
         system.simulate(0.1,n);
