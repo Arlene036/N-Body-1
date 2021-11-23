@@ -8,6 +8,7 @@
  * @version 1.00
  */
 
+import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.awt.Color;
@@ -198,6 +199,8 @@ public class Particle {
      * @param  that the other particle
      */
     public void bounceOff(Particle that, double time) {
+        reverse(time);
+        that.reverse(time);
         double dx  = that.rx - this.rx;
         double dy  = that.ry - this.ry;
         double dvx = that.vx - this.vx;
@@ -230,6 +233,7 @@ public class Particle {
      * Assumes that the particle is colliding with a vertical wall at this instant.
      */
     public void bounceOffVerticalWall(double time) {
+        reverse(time);
         vx = -vx;
         this.rx += this.vx * time;
         this.ry += this.vy * time;
@@ -241,6 +245,7 @@ public class Particle {
      * Assumes that the particle is colliding with a horizontal wall at this instant.
      */
     public void bounceOffHorizontalWall(double time) {
+        reverse(time);
         vy = -vy;
         this.rx += this.vx * time;
         this.ry += this.vy * time;
@@ -277,7 +282,7 @@ public class Particle {
      */
     public void draw() {
         StdDraw.setPenColor(color);
-        StdDraw.point(rx, ry);
+        StdDraw.filledCircle(rx, ry, r);
     }
 
     /**
