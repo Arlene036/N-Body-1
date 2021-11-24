@@ -17,14 +17,11 @@ public class CollisionSystem {
     public void simulate(double dt, int n) {
         for (double t = 0.0; t< 10000; t = t + dt) {
 
-            Quad quad = new Quad(0, 0, 300 * 2);
-            BHTree tree = new BHTree(quad);
-
-
+            BHTree tree = new BHTree(wall);
 
             // build the Barnes-Hut tree
             for (int i = 0; i < n; i++) {
-                if (particles[i].in(quad))
+                if (particles[i].in(wall))
                     tree.insert(particles[i]);
             }
 
@@ -55,8 +52,9 @@ public class CollisionSystem {
 
             // draw the Particle
             StdDraw.clear();
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++) {
                 particles[i].draw();
+            }
 
             StdDraw.show();
             StdDraw.pause(10);
@@ -66,20 +64,21 @@ public class CollisionSystem {
     public static void main(String[] args) {
 
         StdDraw.enableDoubleBuffering();
-        StdDraw.setCanvasSize(600, 600);
+        //StdDraw.setCanvasSize(600, 600);
 
         // the array of particles
         Particle[] particles;
 
         // create n random particles
-        /*if (args.length == 1) {
+        if (args.length == 1) {
+            wall = new Quad(0.5 , 0.5,1);
             int n = Integer.parseInt(args[0]);
             particles = new Particle[n];
             for (int i = 0; i < n; i++)
                 particles[i] = new Particle();
-        }*/
+        }
 
-        String type = StdIn.readString();
+        String type = StdIn.readString(); //TODO
         int square = StdIn.readInt();
         wall = new Quad(square/2 , square/2 ,square);
 
